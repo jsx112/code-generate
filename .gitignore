@@ -1,0 +1,16 @@
+#idea工程文件
+.idea/
+target/
+*.war
+*.class
+
+#eclipse的工程文件
+.settings/
+.project
+.classpath
+
+
+#日志目录
+/logs
+/output
+*.log

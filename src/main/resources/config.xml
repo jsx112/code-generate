@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="GBK"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+	<comment>
+		代码生成器配置文件: 
+		1.会为所有的property生成property_dir属性,如pkg=com.company => pkg_dir=com/company
+		2.可以引用环境变量: ${env.JAVA_HOME} or System.properties: ${user.home},property之间也可以相互引用
+	</comment>
+	
+	<entry key="basepackage">com.jsx.test</entry>
+	
+	<!-- jsp namespace: web/${namespace}/${className}/list.jsp -->
+	<entry key="namespace">pages</entry>
+
+	<entry key="outRoot">output/main/java</entry>
+	<entry key="tableRemovePrefixes"/>
+	<entry key="jdbc_username">root</entry>
+	<entry key="jdbc_password">root</entry>
+		
+	<!-- oracle需要指定jdbc.schema,其它数据库忽略此项配置  -->
+	<!--<entry key="jdbc_schema">SPROC4GD_DEV</entry>-->
+	<!--<entry key="jdbc_catalog"></entry>-->
+	
+	<!-- 数据库类型映射  -->
+	<entry key="java_typemapping.java.sql.Timestamp">Date</entry><!-- 原来Timestamp，为了满足系统需要，统一改成Date  -->
+	<entry key="java_typemapping.java.sql.Date">Date</entry>
+	<entry key="java_typemapping.java.sql.Time">Date</entry>	
+	<entry key="java_typemapping.java.lang.Long">Long</entry>
+	<entry key="java_typemapping.java.lang.Integer">Integer</entry>
+	<entry key="java_typemapping.java.lang.Byte">Integer</entry>
+	<entry key="java_typemapping.java.lang.Short">Integer</entry>
+	<entry key="java_typemapping.java.lang.String">String</entry>
+	<entry key="java_typemapping.java.lang.Boolean">Boolean</entry>
+	<entry key="java_typemapping.java.math.BigDecimal">BigDecimal</entry>
+
+	<!-- H2 
+	<entry key="jdbc_url">jdbc:h2:tcp://localhost/test</entry>
+	<entry key="jdbc_driver">org.h2.Driver</entry> -->
+		
+	<!-- Mysql -->
+	<entry key="jdbc_url">jdbc:mysql://10.41.12.125:3306/test?useUnicode=true&amp;characterEncoding=UTF-8</entry>
+	<entry key="jdbc_driver">com.mysql.jdbc.Driver</entry>
+	
+
+	<!-- Oracle 
+	<entry key="jdbc_url">jdbc:oracle:thin:@10.10.15.164:1521:ORCL</entry>
+	<entry key="jdbc_driver">oracle.jdbc.driver.OracleDriver</entry>-->
+	
+	
+	<!-- SQLServer2000 
+	<entry key="jdbc_url">jdbc:microsoft:sqlserver://localhost:1433;DatabaseName=[database]</entry>
+	<entry key="jdbc_driver">com.microsoft.jdbc.sqlserver.SQLServerDriver</entry>
+	-->
+	
+	<!-- SQLServer2005 
+	<entry key="jdbc_url">jdbc:sqlserver://192.168.0.98:1433;DatabaseName=[database]</entry>
+	<entry key="jdbc_driver">com.microsoft.sqlserver.jdbc.SQLServerDriver</entry>
+	-->
+</properties>

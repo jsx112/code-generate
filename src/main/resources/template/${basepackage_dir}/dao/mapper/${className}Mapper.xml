@@ -1,0 +1,106 @@
+<#include "/macro.include"/>
+<#assign className = table.className>   
+<#assign classNameFirstLower = table.classNameFirstLower>   
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<#macro mapperEl value>${r"#{"}${value}}</#macro>
+<#macro namespace>${className}.</#macro>
+
+<mapper namespace="${basepackage}.dao.mybatis.${className}Dao">
+
+	<resultMap id="customResultMap" type="${basepackage}.entity.${className}">
+        <#list table.columns as column>
+        <result property="${column.columnNameLower}" column="${column.sqlName}"/>
+		</#list>
+	</resultMap>
+	
+	<sql id="columns">
+		<#list table.columns as column>
+        	${column.sqlName}<#if column_has_next>,</#if>
+        </#list>
+	</sql>
+
+	<insert id="insert" useGeneratedKeys="true" keyProperty="${table.idColumn.columnNameFirstLower}">
+        INSERT INTO ${table.sqlName} (
+        <#list table.columns as column>
+        	${column.sqlName} <#if column_has_next>,</#if>
+        </#list>
+        ) VALUES (
+        <#list table.columns as column>
+        	<@mapperEl column.columnNameFirstLower/> <#if column_has_next>,</#if>
+        </#list>        
+        )
+	</insert>
+    
+	<update id="update" >
+        UPDATE ${table.sqlName} SET
+	        <#list table.notPkColumns as column>
+	        ${column.sqlName} = <@mapperEl column.columnNameFirstLower/> <#if column_has_next>,</#if>
+	        </#list>
+        WHERE 
+        	<#list table.compositeIdColumns as column>
+	        ${column.sqlName} = <@mapperEl column.columnNameLower/> <#if column_has_next>,</#if>
+	        </#list>	        
+	</update>
+
+    <delete id="deleteById">
+        DELETE FROM ${table.sqlName} WHERE
+        <#list table.compositeIdColumns as column>
+        ${column.sqlName} = <@mapperEl 'id'/> <#if column_has_next>,</#if>
+		</#list>
+    </delete>
+    
+    <select id="getById"  parameterType="java.lang.Long" resultMap="customResultMap">
+		SELECT <include refid="columns" />
+		    FROM ${table.sqlName} 
+	        WHERE 
+				<#list table.compositeIdColumns as column>
+		        ${column.sqlName} = <@mapperEl 'id'/> <#if column_has_next>,</#if>
+		        </#list>    
+	</select>
+	
+	<sql id="query_conditions">
+		<where>	      				
+	       <#list table.columns as column>
+	       <#if column.isDateTimeColumn>
+	       <if test="${column.columnNameFirstLower}Begin != null">
+				AND ${column.sqlName} >= <@mapperEl column.columnNameFirstLower+"Begin"/>
+		   </if>
+		   <if test="${column.columnNameFirstLower}End != null">
+				AND ${column.sqlName} &lt;= <@mapperEl column.columnNameFirstLower+"End"/>
+		   </if>
+	       <#else>
+	       <if test="${column.columnNameFirstLower} != null and ${column.columnNameFirstLower} != '' ">
+				AND ${column.sqlName} = <@mapperEl column.columnNameFirstLower/>
+			</if>
+	       </#if>
+	       </#list>			
+		</where>
+	</sql>
+		
+    <select id="getTotalCount"  parameterType="${basepackage}.entity.${className}" resultType="long">
+        SELECT count(*) FROM ${table.sqlName} 
+		<include refid="query_conditions"/>    
+    </select>
+    
+    <!--查询列表，可以传分页参数-->
+    <select id="getList" parameterType="${basepackage}.entity.${className}" resultMap="customResultMap">
+    	SELECT <include refid="columns" />
+	    FROM ${table.sqlName} 
+		<include refid="query_conditions"/>
+
+    </select>
+
+    <#list table.columns as column>
+    <#if column.unique && !column.pk>
+    <select id="getBy${column.columnName}" resultMap="customResultMap" parameterType="${column.javaType}">
+	    SELECT <include refid="columns"/>
+	   FROM ${table.sqlName} where ${column.sqlName} = <@mapperEl column.columnNameLower/>
+    </select>
+    
+    </#if>
+	</#list>
+	
+</mapper>
+

@@ -1,0 +1,93 @@
+<#assign className = table.className>  
+<#assign classNameLower = className?uncap_first>  
+全局对象（以下简称model）结构描述如下：
+	<#list table.columns as column>
+	<#if column.isDateTimeColumn>
+	${column.columnNameLower}Begin：${column.columnAlias}开始（仅用在查询条件中，新增、修改不需要）
+	${column.columnNameLower}End：${column.columnAlias}结束（仅用在查询条件中，新增、修改不需要）
+	</#if>
+	${column.columnNameLower}：${column.columnAlias}
+	</#list>
+	pageNum：页码（仅用在查询条件中，新增、修改不需要）
+	pageSize：每页大小（仅用在查询条件中，新增、修改不需要）
+对应的json对象结构如下：
+	{
+	<#list table.columns as column>
+	<#if column.isDateTimeColumn>
+	"${column.columnNameLower}Begin":"2017-06-10 01:01:01",
+	"${column.columnNameLower}End":"2018-07-10 01:01:01",
+	"${column.columnNameLower}":"2017-07-10 12:01:01",
+	<#else>
+	"${column.columnNameLower}":"",
+	</#if>
+	</#list>
+	"pageNum":1,
+	"pageSize":10
+	}
+	
+接口如下：
+1、查询数量
+地址：http://{{ip_port}}/${classNameLower}/count
+入参：model的json字符串
+出参：
+	{
+	"rtnCode": "00000000",
+	"bizData": 7,
+	"i18nKey": "success",
+	"msg": "成功"
+	}
+
+2、查询列表，分页
+地址：http://{{ip_port}}/${classNameLower}/list
+入参：model的json字符串
+出参：
+	{
+	"rtnCode": "00000000",
+	"bizData": model的json数组,
+	"i18nKey": "success",
+	"msg": "成功"
+	}
+
+3、查询单个
+地址：http://{{ip_port}}/${classNameLower}/get/id
+入参：主键id
+出参：
+	{
+	"rtnCode": "00000000",
+	"bizData": model的json对象,
+	"i18nKey": "success",
+	"msg": "成功"
+	}
+
+4、新增
+地址：http://{{ip_port}}/${classNameLower}/insert
+入参：model的json字符串
+出参：
+	{
+	"rtnCode": "00000000",
+	"bizData": "",
+	"i18nKey": "success",
+	"msg": "成功"
+	}
+
+5、修改
+地址：http://{{ip_port}}/${classNameLower}/update
+入参：model的json字符串
+出参：
+	{
+	"rtnCode": "00000000",
+	"bizData": "",
+	"i18nKey": "success",
+	"msg": "成功"
+	}
+
+6、删除（没有id会抛异常）
+地址：http://{{ip_port}}/${classNameLower}/delete/id
+入参：主键id
+出参：
+	{
+	"rtnCode": "00000000",
+	"bizData": "",
+	"i18nKey": "success",
+	"msg": "成功"
+	}
